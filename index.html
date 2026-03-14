@@ -6,14 +6,18 @@
   <title>Animal Name Generator</title>
   <style>
     :root{
-      --bg:#fff9f2;
+      --bg:#fff7ed;
       --card:#ffffff;
-      --ink:#2f2a26;
-      --muted:#6c655f;
-      --line:#eadfce;
-      --accent:#ffb84d;
-      --accent-2:#ffd98c;
-      --good:#eaf7ea;
+      --ink:#2d2a26;
+      --muted:#6a635c;
+      --line:#f2d7b5;
+      --accent:#ff8a00;
+      --accent-soft:#ffd6a5;
+      --accent-blue:#4da6ff;
+      --accent-green:#7ed957;
+      --accent-purple:#c084fc;
+      --accent-pink:#ff7eb6;
+      --good:#eefbe8;
       --danger:#fff0f0;
       --shadow:0 10px 30px rgba(0,0,0,.08);
       --radius:20px;
@@ -22,8 +26,12 @@
     body{
       margin:0;
       font-family:Arial, Helvetica, sans-serif;
-      background:linear-gradient(180deg,#fffaf4 0%, #fff4e6 100%);
+      background:
+        radial-gradient(circle at 20% 10%, #fff4dc 0%, transparent 40%),
+        radial-gradient(circle at 80% 0%, #ffe9f1 0%, transparent 35%),
+        linear-gradient(180deg,#fffaf3 0%, #fff2e2 100%);
       color:var(--ink);
+      overflow-x:hidden;
     }
     .wrap{
       max-width:1050px;
@@ -57,21 +65,25 @@
       padding:12px 16px;
       font-weight:700;
       cursor:pointer;
-      background:var(--accent);
-      color:#3b2c12;
-      box-shadow:var(--shadow);
+      background:linear-gradient(135deg,var(--accent),#ffb347);
+      color:white;
+      box-shadow:0 6px 14px rgba(0,0,0,.12);
+      transition:.15s;
+    }
+    button:hover{
+      transform:translateY(-2px);
     }
     button.secondary{
-      background:#fff;
-      color:var(--ink);
-      border:1px solid var(--line);
-      box-shadow:none;
+      background:linear-gradient(135deg,#6ec5ff,#4da6ff);
+      color:white;
+      border:none;
+      box-shadow:0 6px 14px rgba(0,0,0,.10);
     }
     button.warn{
-      background:#fff3f3;
-      color:#8a2d2d;
-      border:1px solid #f1c9c9;
-      box-shadow:none;
+      background:linear-gradient(135deg,#ff7a7a,#ff9d9d);
+      color:white;
+      border:none;
+      box-shadow:0 6px 14px rgba(0,0,0,.10);
     }
     .grid{
       display:grid;
@@ -83,7 +95,7 @@
     }
     .card{
       background:var(--card);
-      border:1px solid var(--line);
+      border:2px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
       padding:18px;
@@ -126,21 +138,25 @@
     }
     .result-box{
       text-align:center;
-      padding:26px 16px 18px;
-      background:linear-gradient(180deg,#fffefb 0%, #fff7e8 100%);
-      border:1px solid var(--line);
+      padding:30px 16px 20px;
+      background:linear-gradient(180deg,#fffaf0 0%, #ffe8c9 100%);
+      border:2px dashed #ffc37a;
       border-radius:18px;
       min-height:220px;
       display:flex;
       flex-direction:column;
       justify-content:center;
       gap:14px;
+      position:relative;
+      overflow:hidden;
     }
     .result-name{
-      font-size:clamp(2rem, 5vw, 3.6rem);
-      line-height:1.08;
-      font-weight:800;
-      letter-spacing:.4px;
+      font-size:clamp(2rem, 5vw, 3.8rem);
+      line-height:1.05;
+      font-weight:900;
+      color:#ff7a00;
+      text-shadow:0 2px 0 #ffd7a6, 0 4px 12px rgba(0,0,0,.12);
+      letter-spacing:.5px;
       word-break:break-word;
     }
     .result-copy{
@@ -160,12 +176,13 @@
     }
     .pill{
       display:inline-block;
-      padding:7px 10px;
+      padding:7px 12px;
       border-radius:999px;
       background:#fff;
-      border:1px solid var(--line);
-      color:var(--muted);
+      border:2px solid #ffd8a8;
+      color:#8a5a2b;
       font-size:.88rem;
+      font-weight:700;
       margin:4px;
     }
     .hidden{display:none !important}
@@ -205,6 +222,33 @@
     }
     .status.good{background:var(--good)}
     .status.bad{background:var(--danger)}
+
+    #headerEmoji{
+      display:inline-block;
+      transform:rotate(-8deg);
+      margin-right:8px;
+    }
+    .confetti-piece{
+      position:fixed;
+      top:-20px;
+      width:10px;
+      height:16px;
+      border-radius:3px;
+      opacity:.95;
+      pointer-events:none;
+      z-index:9999;
+      animation:fallConfetti 1500ms linear forwards;
+    }
+    @keyframes fallConfetti{
+      0%{
+        transform:translateY(0) rotate(0deg);
+        opacity:1;
+      }
+      100%{
+        transform:translateY(110vh) rotate(720deg);
+        opacity:0;
+      }
+    }
     .footer-note{
       text-align:center;
       color:var(--muted);
@@ -216,7 +260,7 @@
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>Animal Name Generator</h1>
+      <h1><span id="headerEmoji" aria-hidden="true">🐾</span> Animal Name Generator</h1>
       <p class="sub">A family-friendly local name generator for pets, farm animals, and favorite critters. Everything runs in this single HTML file. No backend. No API. Just names.</p>
     </div>
 
@@ -295,6 +339,7 @@
             <textarea id="resultCopy" class="result-copy" rows="2" readonly>Maple Waffles Bloom</textarea>
             <div>
               <span class="pill" id="resultAnimalTag">Animal: Cat</span>
+              <span class="pill" id="resultAnimalEmoji">Emoji: 🐱</span>
               <span class="pill" id="resultStyleTag">Style: Full Name</span>
             </div>
           </div>
@@ -385,6 +430,33 @@
       }
     };
 
+
+    const ANIMAL_EMOJI = {
+      "Alpaca":"🦙","Bird":"🐦","Cat":"🐱","Chicken":"🐔","Chinchilla":"🐭","Cow":"🐮","Dog":"🐶",
+      "Donkey":"🫏","Duck":"🦆","Ferret":"🦦","Fish":"🐟","Goat":"🐐","Guinea Pig":"🐹","Hamster":"🐹",
+      "Hedgehog":"🦔","Horse":"🐴","Llama":"🦙","Pig":"🐷","Pony":"🐴","Rabbit":"🐰","Raccoon":"🦝",
+      "Rat":"🐭","Sheep":"🐑","Snake":"🐍","Turtle":"🐢"
+    };
+
+    function getAnimalEmoji(animal){
+      return ANIMAL_EMOJI[animal] || "🐾";
+    }
+
+    function burstConfetti(){
+      const colors = ["#ff8a00","#ff7eb6","#4da6ff","#7ed957","#c084fc","#ffd166"];
+      const count = 24;
+      for(let i = 0; i < count; i++){
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDuration = (1200 + Math.random() * 900) + "ms";
+        piece.style.transform = `translateY(0) rotate(${Math.random()*180}deg)`;
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 2300);
+      }
+    }
+
     const els = {
       showGeneratorBtn: document.getElementById("showGeneratorBtn"),
       showAdminBtn: document.getElementById("showAdminBtn"),
@@ -404,6 +476,7 @@
       resultName: document.getElementById("resultName"),
       resultCopy: document.getElementById("resultCopy"),
       resultAnimalTag: document.getElementById("resultAnimalTag"),
+      resultAnimalEmoji: document.getElementById("resultAnimalEmoji"),
       resultStyleTag: document.getElementById("resultStyleTag"),
       newAnimalInput: document.getElementById("newAnimalInput"),
       addAnimalBtn: document.getElementById("addAnimalBtn"),
@@ -595,7 +668,9 @@
       els.resultName.textContent = result.name;
       els.resultCopy.value = result.name;
       els.resultAnimalTag.textContent = "Animal: " + result.animal;
+      els.resultAnimalEmoji.textContent = "Emoji: " + getAnimalEmoji(result.animal);
       els.resultStyleTag.textContent = "Style: " + styleLabel(result.style);
+      burstConfetti();
     }
 
     function copyName(){
