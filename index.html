@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animal Name Generator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero card">
+      <h1>Animal Name Generator</h1>
+      <p>Create fun, family-friendly names for pets, farm animals, and other animal friends.</p>
+      <div class="hero-links">
+        <a href="admin.html">Animal List Admin</a>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card controls">
+        <h2>Name Options</h2>
+        <div class="form-grid">
+          <label>
+            <span>Preferred First Name</span>
+            <input id="preferredFirst" type="text" maxlength="40" placeholder="Optional" />
+          </label>
+
+          <label>
+            <span>Preferred Middle Name</span>
+            <input id="preferredMiddle" type="text" maxlength="40" placeholder="Optional" />
+          </label>
+
+          <label>
+            <span>Preferred Last Name</span>
+            <input id="preferredLast" type="text" maxlength="40" placeholder="Optional" />
+          </label>
+
+          <label>
+            <span>Animal</span>
+            <select id="animalSelect"></select>
+          </label>
+
+          <label>
+            <span>Sex</span>
+            <select id="sexSelect">
+              <option value="neutral">Neutral / Any</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Name Length</span>
+            <select id="lengthSelect">
+              <option value="1">1 Word</option>
+              <option value="2">2 Words</option>
+              <option value="3" selected>3 Words</option>
+              <option value="4">4 Words</option>
+              <option value="5">5 Words</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Name Style</span>
+            <select id="styleSelect">
+              <option value="nickname">Nickname</option>
+              <option value="short">Short Name</option>
+              <option value="full" selected>Full Name</option>
+              <option value="formal">Formal Name</option>
+              <option value="show">Show / Stage Name</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="button-row">
+          <button id="generateBtn" class="primary">Generate Name</button>
+          <button id="tryAgainBtn" class="secondary">Try Again</button>
+        </div>
+      </section>
+
+      <section class="card result-card">
+        <h2>Generated Name</h2>
+        <div id="resultDisplay" class="result-display">Pick your options and generate a name.</div>
+
+        <label class="result-box-wrap">
+          <span>Copy / Paste Name</span>
+          <textarea id="resultBox" rows="3" readonly></textarea>
+        </label>
+
+        <div class="button-row">
+          <button id="copyBtn" class="primary">Copy Name</button>
+        </div>
+
+        <p id="copyStatus" class="status" aria-live="polite"></p>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

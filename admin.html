@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animal List Admin</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero card">
+      <h1>Animal List Admin</h1>
+      <p>Manage the animal list on this device. Reset at any time to match the repo defaults again.</p>
+      <div class="hero-links">
+        <a href="index.html">Back to Generator</a>
+      </div>
+    </header>
+
+    <main class="grid single-column">
+      <section class="card controls">
+        <h2>Add Animal</h2>
+        <div class="form-grid admin-add-grid">
+          <label>
+            <span>Animal Name</span>
+            <input id="newAnimalInput" type="text" maxlength="40" placeholder="Example: Lizard" />
+          </label>
+        </div>
+        <div class="button-row">
+          <button id="addAnimalBtn" class="primary">Add Animal</button>
+          <button id="resetAnimalsBtn" class="danger">Reset to Default</button>
+        </div>
+        <p class="helper-text">Device changes are saved in this browser only.</p>
+        <p id="adminStatus" class="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card">
+        <h2>Current Animal List</h2>
+        <div id="animalAdminList" class="animal-admin-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="admin.js" type="module"></script>
+</body>
+</html>
