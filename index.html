@@ -4,98 +4,681 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Animal Name Generator</title>
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root{
+      --bg:#fff9f2;
+      --card:#ffffff;
+      --ink:#2f2a26;
+      --muted:#6c655f;
+      --line:#eadfce;
+      --accent:#ffb84d;
+      --accent-2:#ffd98c;
+      --good:#eaf7ea;
+      --danger:#fff0f0;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#fffaf4 0%, #fff4e6 100%);
+      color:var(--ink);
+    }
+    .wrap{
+      max-width:1050px;
+      margin:0 auto;
+      padding:20px;
+    }
+    .hero{
+      text-align:center;
+      padding:12px 0 18px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(2rem, 4vw, 3rem);
+    }
+    .sub{
+      color:var(--muted);
+      margin:0 auto;
+      max-width:720px;
+      line-height:1.45;
+    }
+    .topbar{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin:10px 0 22px;
+    }
+    button{
+      border:none;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:700;
+      cursor:pointer;
+      background:var(--accent);
+      color:#3b2c12;
+      box-shadow:var(--shadow);
+    }
+    button.secondary{
+      background:#fff;
+      color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+    button.warn{
+      background:#fff3f3;
+      color:#8a2d2d;
+      border:1px solid #f1c9c9;
+      box-shadow:none;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+    }
+    @media (max-width: 840px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    .section-title{
+      margin:0 0 14px;
+      font-size:1.2rem;
+    }
+    .fields{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+    .fields.three{
+      grid-template-columns:repeat(3,1fr);
+    }
+    @media (max-width: 640px){
+      .fields,.fields.three{grid-template-columns:1fr}
+    }
+    label{
+      display:block;
+      font-size:.92rem;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 13px;
+      font-size:1rem;
+      background:#fffefc;
+      color:var(--ink);
+    }
+    small.note{
+      display:block;
+      margin-top:6px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+    .result-box{
+      text-align:center;
+      padding:26px 16px 18px;
+      background:linear-gradient(180deg,#fffefb 0%, #fff7e8 100%);
+      border:1px solid var(--line);
+      border-radius:18px;
+      min-height:220px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:14px;
+    }
+    .result-name{
+      font-size:clamp(2rem, 5vw, 3.6rem);
+      line-height:1.08;
+      font-weight:800;
+      letter-spacing:.4px;
+      word-break:break-word;
+    }
+    .result-copy{
+      max-width:560px;
+      margin:0 auto;
+      resize:none;
+      text-align:center;
+      font-weight:700;
+      background:#fff;
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .pill{
+      display:inline-block;
+      padding:7px 10px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--muted);
+      font-size:.88rem;
+      margin:4px;
+    }
+    .hidden{display:none !important}
+    .animal-list{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:12px;
+    }
+    @media (max-width: 640px){
+      .animal-list{grid-template-columns:1fr}
+    }
+    .animal-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fffefc;
+    }
+    .muted{
+      color:var(--muted);
+    }
+    .stack{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .status{
+      font-size:.92rem;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .status.good{background:var(--good)}
+    .status.bad{background:var(--danger)}
+    .footer-note{
+      text-align:center;
+      color:var(--muted);
+      margin:18px 0 8px;
+      font-size:.92rem;
+    }
+  </style>
 </head>
 <body>
-  <div class="page">
-    <header class="hero card">
+  <div class="wrap">
+    <div class="hero">
       <h1>Animal Name Generator</h1>
-      <p>Create fun, family-friendly names for pets, farm animals, and other animal friends.</p>
-      <div class="hero-links">
-        <a href="admin.html">Animal List Admin</a>
+      <p class="sub">A family-friendly local name generator for pets, farm animals, and favorite critters. Everything runs in this single HTML file. No backend. No API. Just names.</p>
+    </div>
+
+    <div class="topbar">
+      <button id="showGeneratorBtn">Generator</button>
+      <button id="showAdminBtn" class="secondary">Animal List Admin</button>
+    </div>
+
+    <section id="generatorView">
+      <div class="grid">
+        <div class="card">
+          <h2 class="section-title">Name Setup</h2>
+
+          <div class="fields three">
+            <div>
+              <label for="preferredFirst">Preferred First</label>
+              <input id="preferredFirst" type="text" maxlength="24" placeholder="Daisy">
+            </div>
+            <div>
+              <label for="preferredMiddle">Preferred Middle</label>
+              <input id="preferredMiddle" type="text" maxlength="24" placeholder="Mae">
+            </div>
+            <div>
+              <label for="preferredLast">Preferred Last</label>
+              <input id="preferredLast" type="text" maxlength="24" placeholder="Belle">
+            </div>
+          </div>
+
+          <div class="fields" style="margin-top:12px;">
+            <div>
+              <label for="animalSelect">Animal</label>
+              <select id="animalSelect"></select>
+            </div>
+            <div>
+              <label for="sexSelect">Name Type</label>
+              <select id="sexSelect">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="neutral" selected>Neutral / Any</option>
+              </select>
+            </div>
+            <div>
+              <label for="lengthSelect">Name Length</label>
+              <select id="lengthSelect">
+                <option value="1">1 Word</option>
+                <option value="2">2 Words</option>
+                <option value="3" selected>3 Words</option>
+                <option value="4">4 Words</option>
+                <option value="5">5 Words</option>
+              </select>
+            </div>
+            <div>
+              <label for="styleSelect">Style</label>
+              <select id="styleSelect">
+                <option value="nickname">Nickname</option>
+                <option value="short">Short Name</option>
+                <option value="full" selected>Full Name</option>
+                <option value="formal">Formal Name</option>
+                <option value="show">Show / Stage Name</option>
+              </select>
+            </div>
+          </div>
+
+          <small class="note">Entered names are optional. The generator will use them when they fit the selected style and word count, then fill in the rest locally.</small>
+
+          <div class="actions" style="margin-top:16px;">
+            <button id="generateBtn">Generate Name</button>
+            <button id="tryAgainBtn" class="secondary">Try Again</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">Generated Name</h2>
+          <div class="result-box">
+            <div id="resultName" class="result-name">Maple Waffles Bloom</div>
+            <textarea id="resultCopy" class="result-copy" rows="2" readonly>Maple Waffles Bloom</textarea>
+            <div>
+              <span class="pill" id="resultAnimalTag">Animal: Cat</span>
+              <span class="pill" id="resultStyleTag">Style: Full Name</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="copyBtn">Copy Name</button>
+            <button id="clearPrefsBtn" class="secondary">Clear Preferred Names</button>
+          </div>
+        </div>
       </div>
-    </header>
+    </section>
 
-    <main class="grid">
-      <section class="card controls">
-        <h2>Name Options</h2>
-        <div class="form-grid">
-          <label>
-            <span>Preferred First Name</span>
-            <input id="preferredFirst" type="text" maxlength="40" placeholder="Optional" />
-          </label>
+    <section id="adminView" class="hidden">
+      <div class="grid">
+        <div class="card">
+          <h2 class="section-title">Animal List Admin</h2>
+          <div class="stack">
+            <div class="status good">Changes here apply only to this device. Reset to Default will clear local animal changes and restore the built-in list from this HTML file.</div>
+            <div>
+              <label for="newAnimalInput">Add Animal</label>
+              <div class="actions" style="justify-content:flex-start; margin-top:8px;">
+                <input id="newAnimalInput" type="text" maxlength="30" placeholder="Mini Donkey" style="max-width:280px;">
+                <button id="addAnimalBtn">Add Animal</button>
+              </div>
+            </div>
 
-          <label>
-            <span>Preferred Middle Name</span>
-            <input id="preferredMiddle" type="text" maxlength="40" placeholder="Optional" />
-          </label>
+            <div class="actions" style="justify-content:flex-start;">
+              <button id="resetAnimalsBtn" class="warn">Reset to Default</button>
+            </div>
 
-          <label>
-            <span>Preferred Last Name</span>
-            <input id="preferredLast" type="text" maxlength="40" placeholder="Optional" />
-          </label>
+            <div>
+              <h3 style="margin:8px 0 6px;">Visible Animals</h3>
+              <div id="animalList" class="animal-list"></div>
+            </div>
 
-          <label>
-            <span>Animal</span>
-            <select id="animalSelect"></select>
-          </label>
-
-          <label>
-            <span>Sex</span>
-            <select id="sexSelect">
-              <option value="neutral">Neutral / Any</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Name Length</span>
-            <select id="lengthSelect">
-              <option value="1">1 Word</option>
-              <option value="2">2 Words</option>
-              <option value="3" selected>3 Words</option>
-              <option value="4">4 Words</option>
-              <option value="5">5 Words</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Name Style</span>
-            <select id="styleSelect">
-              <option value="nickname">Nickname</option>
-              <option value="short">Short Name</option>
-              <option value="full" selected>Full Name</option>
-              <option value="formal">Formal Name</option>
-              <option value="show">Show / Stage Name</option>
-            </select>
-          </label>
+            <div>
+              <h3 style="margin:8px 0 6px;">Hidden on This Device</h3>
+              <div id="hiddenAnimalList" class="animal-list"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="button-row">
-          <button id="generateBtn" class="primary">Generate Name</button>
-          <button id="tryAgainBtn" class="secondary">Try Again</button>
+        <div class="card">
+          <h2 class="section-title">How It Works</h2>
+          <div class="stack muted" style="line-height:1.5;">
+            <div>• The default animal list is built into this HTML file.</div>
+            <div>• Device-level edits are saved in your browser using local storage.</div>
+            <div>• Added animals appear in the dropdown immediately.</div>
+            <div>• Hidden animals are removed only on this device until restored or reset.</div>
+            <div>• Reset to Default clears local edits and reloads the built-in list.</div>
+          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="card result-card">
-        <h2>Generated Name</h2>
-        <div id="resultDisplay" class="result-display">Pick your options and generate a name.</div>
-
-        <label class="result-box-wrap">
-          <span>Copy / Paste Name</span>
-          <textarea id="resultBox" rows="3" readonly></textarea>
-        </label>
-
-        <div class="button-row">
-          <button id="copyBtn" class="primary">Copy Name</button>
-        </div>
-
-        <p id="copyStatus" class="status" aria-live="polite"></p>
-      </section>
-    </main>
+    <p class="footer-note">Single-file static app for GitHub Pages or local browser use.</p>
   </div>
 
-  <script src="app.js" type="module"></script>
+  <script>
+    const DEFAULT_ANIMALS = [
+      "Alpaca","Bird","Cat","Chicken","Chinchilla","Cow","Dog","Donkey","Duck","Ferret","Fish",
+      "Goat","Guinea Pig","Hamster","Hedgehog","Horse","Llama","Pig","Pony","Rabbit","Raccoon",
+      "Rat","Sheep","Snake","Turtle"
+    ].sort((a,b)=>a.localeCompare(b));
+
+    const STORAGE_KEY = "animalNameGeneratorDeviceAnimalOverrides";
+
+    const DATA = {
+      maleFirst: ["Buddy","Charlie","Cooper","Finn","Gus","Henry","Leo","Louie","Milo","Oliver","Otis","Remy","Roscoe","Scout","Teddy","Theo","Winston"],
+      femaleFirst: ["Bella","Daisy","Ellie","Gigi","Hazel","Lola","Lucy","Luna","Maple","Millie","Olive","Penny","Piper","Poppy","Rosie","Ruby","Sadie","Willow"],
+      neutralFirst: ["Biscuit","Blue","Buttons","Clover","Coco","Cricket","Marble","Mochi","Noodle","Peaches","Pepper","Pumpkin","Skittles","Snickers","Sunny","Waffles"],
+      middleCute: ["Bean","Boo","Bug","Dot","Joy","Muffin","Nugget","Peach","Puff","Sprout","Twinkle"],
+      middleClassic: ["Belle","Grace","James","June","Kate","Lane","Mae","Ray","Rose","Skye"],
+      middleFancy: ["Ashford","Celeste","Everly","Jubilee","Magnolia","Montrose","Pennington","Sterling","Valentine","Winslow"],
+      lastSimple: ["Bloom","Brooks","Brown","Carter","Clover","Fields","Fox","Hill","Lane","Paws","Reed","Stone","Vale"],
+      lastFancy: ["Barkington","Fluffington","Meadowshire","Moonwhistle","Pemberly","Picklesworth","Silverbrook","Starling","Thistledown","Willowby"],
+      titles: ["Captain","Duke","Lady","Miss","Mister","Professor","Sir"],
+      showPrefixes: ["Blue Ribbon","Golden Clover","Maple Grove","Moonlight","Sunny Meadow","Whispering Pines"],
+      funnyWords: ["Banjo","Beans","Bubbles","Giggles","Jellybean","Pickles","Sprinkles","Toots"],
+      animalTone: {
+        "Cat":["cute","fancy","funny"],
+        "Dog":["classic","cute","funny"],
+        "Horse":["formal","show","classic"],
+        "Rabbit":["cute","whimsy","funny"],
+        "Goat":["funny","rustic","cute"],
+        "Pig":["funny","cute","classic"],
+        "Raccoon":["funny","quirky","mischief"]
+      }
+    };
+
+    const els = {
+      showGeneratorBtn: document.getElementById("showGeneratorBtn"),
+      showAdminBtn: document.getElementById("showAdminBtn"),
+      generatorView: document.getElementById("generatorView"),
+      adminView: document.getElementById("adminView"),
+      preferredFirst: document.getElementById("preferredFirst"),
+      preferredMiddle: document.getElementById("preferredMiddle"),
+      preferredLast: document.getElementById("preferredLast"),
+      animalSelect: document.getElementById("animalSelect"),
+      sexSelect: document.getElementById("sexSelect"),
+      lengthSelect: document.getElementById("lengthSelect"),
+      styleSelect: document.getElementById("styleSelect"),
+      generateBtn: document.getElementById("generateBtn"),
+      tryAgainBtn: document.getElementById("tryAgainBtn"),
+      copyBtn: document.getElementById("copyBtn"),
+      clearPrefsBtn: document.getElementById("clearPrefsBtn"),
+      resultName: document.getElementById("resultName"),
+      resultCopy: document.getElementById("resultCopy"),
+      resultAnimalTag: document.getElementById("resultAnimalTag"),
+      resultStyleTag: document.getElementById("resultStyleTag"),
+      newAnimalInput: document.getElementById("newAnimalInput"),
+      addAnimalBtn: document.getElementById("addAnimalBtn"),
+      resetAnimalsBtn: document.getElementById("resetAnimalsBtn"),
+      animalList: document.getElementById("animalList"),
+      hiddenAnimalList: document.getElementById("hiddenAnimalList")
+    };
+
+    function titleCase(value){
+      return value
+        .trim()
+        .replace(/\s+/g," ")
+        .toLowerCase()
+        .split(" ")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    }
+
+    function rand(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function uniqWords(parts){
+      const seen = new Set();
+      return parts.filter(Boolean).filter(part => {
+        const k = part.toLowerCase();
+        if(seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+    }
+
+    function styleLabel(style){
+      return {
+        nickname: "Nickname",
+        short: "Short Name",
+        full: "Full Name",
+        formal: "Formal Name",
+        show: "Show / Stage Name"
+      }[style] || style;
+    }
+
+    function getOverrides(){
+      try{
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { added: [], hidden: [] };
+      }catch{
+        return { added: [], hidden: [] };
+      }
+    }
+
+    function saveOverrides(data){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function getActiveAnimals(){
+      const overrides = getOverrides();
+      const base = DEFAULT_ANIMALS.filter(a => !overrides.hidden.includes(a));
+      const added = overrides.added.filter(a => !overrides.hidden.includes(a));
+      return [...new Set([...base, ...added])].sort((a,b)=>a.localeCompare(b));
+    }
+
+    function refreshAnimalDropdown(){
+      const animals = getActiveAnimals();
+      const current = els.animalSelect.value;
+      els.animalSelect.innerHTML = animals.map(a => `<option value="${a}">${a}</option>`).join("");
+      if(animals.includes(current)){
+        els.animalSelect.value = current;
+      }
+    }
+
+    function renderAdminLists(){
+      const overrides = getOverrides();
+      const active = getActiveAnimals();
+      const hidden = [...new Set(overrides.hidden)].sort((a,b)=>a.localeCompare(b));
+
+      els.animalList.innerHTML = active.map(animal => {
+        const isLocal = overrides.added.includes(animal);
+        return `
+          <div class="animal-row">
+            <div>
+              <strong>${animal}</strong><br>
+              <span class="muted">${isLocal ? "Local add" : "Built in"}</span>
+            </div>
+            <div class="actions" style="margin:0;">
+              <button class="secondary" onclick="hideAnimal('${animal.replace(/'/g, "\\'")}')">Hide</button>
+              ${isLocal ? `<button class="warn" onclick="removeLocalAnimal('${animal.replace(/'/g, "\\'")}')">Remove</button>` : ``}
+            </div>
+          </div>
+        `;
+      }).join("") || `<div class="muted">No visible animals.</div>`;
+
+      els.hiddenAnimalList.innerHTML = hidden.map(animal => `
+        <div class="animal-row">
+          <div><strong>${animal}</strong></div>
+          <div class="actions" style="margin:0;">
+            <button class="secondary" onclick="restoreAnimal('${animal.replace(/'/g, "\\'")}')">Restore</button>
+          </div>
+        </div>
+      `).join("") || `<div class="muted">No hidden animals.</div>`;
+    }
+
+    function getNamePools(sex){
+      if(sex === "male"){
+        return [...DATA.maleFirst, ...DATA.neutralFirst];
+      }
+      if(sex === "female"){
+        return [...DATA.femaleFirst, ...DATA.neutralFirst];
+      }
+      return [...DATA.maleFirst, ...DATA.femaleFirst, ...DATA.neutralFirst];
+    }
+
+    function chooseMiddle(style){
+      if(style === "nickname") return rand([...DATA.middleCute, ...DATA.funnyWords]);
+      if(style === "short") return rand([...DATA.middleCute, ...DATA.middleClassic]);
+      if(style === "full") return rand([...DATA.middleClassic, ...DATA.middleCute]);
+      if(style === "formal") return rand([...DATA.middleFancy, ...DATA.middleClassic]);
+      if(style === "show") return rand([...DATA.middleFancy, ...DATA.middleClassic, ...DATA.funnyWords]);
+      return rand(DATA.middleClassic);
+    }
+
+    function chooseLast(style){
+      if(style === "nickname") return rand([...DATA.funnyWords, ...DATA.lastSimple]);
+      if(style === "short") return rand(DATA.lastSimple);
+      if(style === "full") return rand([...DATA.lastSimple, ...DATA.lastFancy]);
+      if(style === "formal") return rand([...DATA.lastFancy, ...DATA.lastSimple]);
+      if(style === "show") return rand([...DATA.lastFancy, ...DATA.lastSimple]);
+      return rand(DATA.lastSimple);
+    }
+
+    function buildGeneratedName(){
+      const preferred = {
+        first: titleCase(els.preferredFirst.value || ""),
+        middle: titleCase(els.preferredMiddle.value || ""),
+        last: titleCase(els.preferredLast.value || "")
+      };
+      const animal = els.animalSelect.value || "Cat";
+      const sex = els.sexSelect.value;
+      const wordCount = parseInt(els.lengthSelect.value, 10);
+      const style = els.styleSelect.value;
+
+      const firstPool = getNamePools(sex);
+      const generatedFirst = preferred.first || rand(firstPool);
+      const generatedMiddle = preferred.middle || chooseMiddle(style);
+      const generatedLast = preferred.last || chooseLast(style);
+
+      let parts = [];
+
+      if(style === "nickname"){
+        parts = [generatedFirst, generatedMiddle, generatedLast];
+      } else if(style === "short"){
+        parts = [generatedFirst, generatedLast, generatedMiddle];
+      } else if(style === "full"){
+        parts = [generatedFirst, generatedMiddle, generatedLast];
+      } else if(style === "formal"){
+        parts = [generatedFirst, generatedMiddle, generatedLast];
+        if(wordCount >= 4) parts.unshift(rand(DATA.titles));
+      } else if(style === "show"){
+        parts = [generatedFirst, generatedMiddle, generatedLast];
+        if(wordCount >= 4) parts.unshift(rand(DATA.showPrefixes));
+        if(wordCount >= 5) parts.push(animal);
+      }
+
+      parts = uniqWords(parts);
+
+      while(parts.length < wordCount){
+        const filler = style === "formal"
+          ? rand([...DATA.middleFancy, ...DATA.lastFancy, ...DATA.titles])
+          : style === "show"
+          ? rand([...DATA.showPrefixes, ...DATA.funnyWords, ...DATA.lastFancy])
+          : rand([...DATA.middleCute, ...DATA.middleClassic, ...DATA.lastSimple, ...DATA.funnyWords]);
+        parts = uniqWords([...parts, filler]);
+      }
+
+      if(parts.length > wordCount){
+        if(wordCount === 1){
+          parts = [preferred.first || generatedFirst];
+        } else if(wordCount === 2){
+          parts = [preferred.first || generatedFirst, preferred.last || generatedLast];
+        } else {
+          parts = parts.slice(0, wordCount);
+        }
+      }
+
+      return { animal, style, name: parts.join(" ") };
+    }
+
+    function renderGeneratedName(){
+      const result = buildGeneratedName();
+      els.resultName.textContent = result.name;
+      els.resultCopy.value = result.name;
+      els.resultAnimalTag.textContent = "Animal: " + result.animal;
+      els.resultStyleTag.textContent = "Style: " + styleLabel(result.style);
+    }
+
+    function copyName(){
+      els.resultCopy.select();
+      els.resultCopy.setSelectionRange(0, els.resultCopy.value.length);
+      navigator.clipboard?.writeText(els.resultCopy.value).catch(() => {});
+    }
+
+    function switchView(view){
+      const showGenerator = view === "generator";
+      els.generatorView.classList.toggle("hidden", !showGenerator);
+      els.adminView.classList.toggle("hidden", showGenerator);
+      els.showGeneratorBtn.classList.toggle("secondary", !showGenerator);
+      els.showAdminBtn.classList.toggle("secondary", showGenerator);
+    }
+
+    function addAnimal(){
+      const raw = els.newAnimalInput.value.trim();
+      if(!raw) return;
+      const value = titleCase(raw);
+      const overrides = getOverrides();
+      const exists = [...DEFAULT_ANIMALS, ...overrides.added].some(a => a.toLowerCase() === value.toLowerCase());
+      if(!exists){
+        overrides.added.push(value);
+      }
+      overrides.hidden = overrides.hidden.filter(a => a.toLowerCase() !== value.toLowerCase());
+      overrides.added = [...new Set(overrides.added)].sort((a,b)=>a.localeCompare(b));
+      saveOverrides(overrides);
+      els.newAnimalInput.value = "";
+      refreshAnimalDropdown();
+      renderAdminLists();
+    }
+
+    window.hideAnimal = function(animal){
+      const overrides = getOverrides();
+      if(!overrides.hidden.includes(animal)) overrides.hidden.push(animal);
+      saveOverrides(overrides);
+      refreshAnimalDropdown();
+      renderAdminLists();
+    }
+
+    window.restoreAnimal = function(animal){
+      const overrides = getOverrides();
+      overrides.hidden = overrides.hidden.filter(a => a !== animal);
+      saveOverrides(overrides);
+      refreshAnimalDropdown();
+      renderAdminLists();
+    }
+
+    window.removeLocalAnimal = function(animal){
+      const overrides = getOverrides();
+      overrides.added = overrides.added.filter(a => a !== animal);
+      overrides.hidden = overrides.hidden.filter(a => a !== animal);
+      saveOverrides(overrides);
+      refreshAnimalDropdown();
+      renderAdminLists();
+    }
+
+    function resetAnimals(){
+      localStorage.removeItem(STORAGE_KEY);
+      refreshAnimalDropdown();
+      renderAdminLists();
+    }
+
+    els.showGeneratorBtn.addEventListener("click", () => switchView("generator"));
+    els.showAdminBtn.addEventListener("click", () => switchView("admin"));
+    els.generateBtn.addEventListener("click", renderGeneratedName);
+    els.tryAgainBtn.addEventListener("click", renderGeneratedName);
+    els.copyBtn.addEventListener("click", copyName);
+    els.clearPrefsBtn.addEventListener("click", () => {
+      els.preferredFirst.value = "";
+      els.preferredMiddle.value = "";
+      els.preferredLast.value = "";
+    });
+    els.addAnimalBtn.addEventListener("click", addAnimal);
+    els.resetAnimalsBtn.addEventListener("click", resetAnimals);
+    els.newAnimalInput.addEventListener("keydown", e => {
+      if(e.key === "Enter") addAnimal();
+    });
+
+    refreshAnimalDropdown();
+    renderAdminLists();
+    renderGeneratedName();
+  </script>
 </body>
 </html>
